@@ -3,7 +3,7 @@ import sys
 def getInput():
   
   if len(sys.argv) < 2:
-    print("Usage: python3 part1.py <filename>")
+    print("Usage: python3 part1.py <filename>asdf")
     quit()
     
   filename = sys.argv[1]
