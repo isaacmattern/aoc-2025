@@ -10,12 +10,6 @@ def getInput():
   input = open(filename, 'r')
   return input
 
-def getSumOfNumbersInBetween(lowerNumber: int, higherNumber: int) -> int:
-  result = 0
-  for number in range(lowerNumber, higherNumber + 1):
-    result += number
-  return result
-
 def valid(number: int) -> bool:
   numberString = str(number)
   if len(numberString) % 2 == 1:
