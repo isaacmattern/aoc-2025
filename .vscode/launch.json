@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Example Input",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": "./exampleInput.txt",
+      "cwd": "${fileDirname}"
+    },
+    {
+      "name": "Python Debugger: Challenge Input",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": "./input.txt",
+      "cwd": "${fileDirname}"
+    }
+  ]
+}

@@ -14,14 +14,24 @@ def solve():
   
   input = getInput()
   
-  print("Beginning of Input\n")
+  currentPosition = 50
+  password = 0
   
   for line in input:
-    print(line)
+    direction, clicks = line[0], int(line[1:])
     
-  print("\nEnd of Input")
-  
-  ans = 0
-  print(ans)      
+    if direction == "L":
+      currentPosition -= clicks
+      while currentPosition < 0:
+        currentPosition = 100 + currentPosition
+    else:
+      currentPosition += clicks
+      while currentPosition > 99:
+        currentPosition -= 100
+    
+    if currentPosition == 0:
+      password += 1
+    
+  print(password)      
 
 solve()
