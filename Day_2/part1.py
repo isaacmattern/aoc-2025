@@ -13,15 +13,15 @@ def getInput():
 def solve():
   
   input = getInput()
-  
-  print("Beginning of Input\n")
-  
-  for line in input:
-    print(line)
-    
-  print("\nEnd of Input")
+  line = input[0]
+  rangeStrings = line.split(",")
+  ranges = []
+  for rangeString in rangeStrings:
+    beginningString, endString = rangeString.split("-")
+    ranges.append([int(beginningString), int(endString)])
   
   ans = 0
+
   print(ans)      
 
 solve()
