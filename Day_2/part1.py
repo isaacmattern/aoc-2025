@@ -13,7 +13,7 @@ def getInput():
 def solve():
   
   input = getInput()
-  line = input[0]
+  line = input.readline()
   rangeStrings = line.split(",")
   ranges = []
   for rangeString in rangeStrings:
