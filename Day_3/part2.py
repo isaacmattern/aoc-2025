@@ -12,9 +12,8 @@ def getInput():
 
 def solve():
   
+  NUM_BATTERIES_TO_TURN_ON = 12
   input = getInput()
-  
-  ans = 0
   
   banks = []
   for line in input:
@@ -26,14 +25,15 @@ def solve():
     
   bankLength = len(banks[0])
   
+  ans = 0
   for bank in banks:
-    digits = [0] * 12
+    digits = [0] * NUM_BATTERIES_TO_TURN_ON
     for i, digit in enumerate(bank):
       digitIndex = 0
-      for j in range(12, 0, -1):
+      for j in range(NUM_BATTERIES_TO_TURN_ON, 0, -1):
         if i <= bankLength - j and digit > digits[digitIndex]:
           digits[digitIndex] = digit
-          for d in range(digitIndex + 1, 12):
+          for d in range(digitIndex + 1, NUM_BATTERIES_TO_TURN_ON):
             digits[d] = 0
           break
         digitIndex += 1
