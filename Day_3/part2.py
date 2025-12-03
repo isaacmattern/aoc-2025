@@ -27,16 +27,19 @@ def solve():
   bankLength = len(banks[0])
   
   for bank in banks:
-    digit1 = 0
-    digit2 = 0
+    digits = [0] * 12
     for i, digit in enumerate(bank):
-      if i < bankLength - 1 and digit > digit1:
-        digit1 = digit
-        digit2 = 0
-      elif digit > digit2:
-        digit2 = digit
-      
-    ans += (10 * digit1) + digit2
+      digitIndex = 0
+      for j in range(12, 0, -1):
+        if i <= bankLength - j and digit > digits[digitIndex]:
+          digits[digitIndex] = digit
+          for d in range(digitIndex + 1, 12):
+            digits[d] = 0
+          break
+        digitIndex += 1
+        
+    bankJoltage = int("".join(str(digit) for digit in digits))
+    ans += bankJoltage
       
   print(ans)      
 
