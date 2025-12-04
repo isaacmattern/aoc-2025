@@ -14,7 +14,20 @@ def getInput():
   input = open(filename, 'r')
   return input
 
-def canAccessRoll(r: int, c: int, grid: list[str]) -> bool:
+def removeRoll(r: int, c: int, grid: list[list]) -> None:
+  numRows = len(grid)
+  numCols = len(grid[0])
+  
+  for direction in DIRECTIONS:
+    newR, newC = r + direction[0], c + direction[1]
+    if ((newR >= 0 and newR < numRows) and
+        (newC >= 0 and newC < numCols) and
+        grid[newR][newC] != '.'):
+      grid[newR][newC] -= 1
+      
+  grid[r][c] = '.'
+
+def getNumAdjacent(r: int, c: int, grid: list[list]) -> int:
   numAdjacentRolls = 0
   numRows = len(grid)
   numCols = len(grid[0])
@@ -26,22 +39,38 @@ def canAccessRoll(r: int, c: int, grid: list[str]) -> bool:
         grid[newR][newC] == '@'):
       numAdjacentRolls += 1
   
-  return numAdjacentRolls < 4
+  return numAdjacentRolls
         
 def solve():
   
   input = getInput()
   
-  grid = []  
+  inputGrid = []  
   for line in input:
-    grid.append(line.strip())
+    inputGrid.append(line.strip())
     
+  numberGrid = []
+  for r in range(len(inputGrid)):
+    nextRow = []
+    for c in range(len(inputGrid)):
+      if inputGrid[r][c] == "@":
+        numAdjacent = getNumAdjacent(r, c, inputGrid)
+        nextRow.append(numAdjacent)
+      else:
+        nextRow.append('.')
+    numberGrid.append(nextRow)
+        
   ans = 0
-  for r in range(len(grid)):
-    for c in range(len(grid)):
-      if grid[r][c] == "@" and canAccessRoll(r, c, grid):
-        ans += 1
-      
+  keepSearching = True
+  while keepSearching:
+    keepSearching = False
+    for r in range(len(numberGrid)):
+      for c in range(len(numberGrid)):
+        if numberGrid[r][c] != '.' and numberGrid[r][c] < 4:
+          removeRoll(r, c, numberGrid)
+          keepSearching = True
+          ans += 1
+  
   print(ans)      
 
 solve()
