@@ -1,5 +1,9 @@
 import sys
 
+DIRECTIONS = [[-1, -1], [-1, 0], [-1, 1],
+              [0, -1 ],          [0, 1],
+              [1, -1 ], [1, 0 ], [1, 1]]
+
 def getInput():
   
   if len(sys.argv) < 2:
@@ -10,18 +14,34 @@ def getInput():
   input = open(filename, 'r')
   return input
 
+def canAccessRoll(r: int, c: int, grid: list[str]) -> bool:
+  numAdjacentRolls = 0
+  numRows = len(grid)
+  numCols = len(grid[0])
+  
+  for direction in DIRECTIONS:
+    newR, newC = r + direction[0], c + direction[1]
+    if ((newR >= 0 and newR < numRows) and
+        (newC >= 0 and newC < numCols) and
+        grid[newR][newC] == '@'):
+      numAdjacentRolls += 1
+  
+  return numAdjacentRolls < 4
+        
 def solve():
   
   input = getInput()
   
-  print("Beginning of Input\n")
-  
+  grid = []  
   for line in input:
-    print(line)
+    grid.append(line.strip())
     
-  print("\nEnd of Input")
-  
   ans = 0
+  for r in range(len(grid)):
+    for c in range(len(grid)):
+      if grid[r][c] == "@" and canAccessRoll(r, c, grid):
+        ans += 1
+      
   print(ans)      
 
 solve()
