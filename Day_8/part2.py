@@ -36,7 +36,8 @@ def solve():
       distance = calculateDistance(nodes[i], nodes[j])
       connectionsHeap.append([distance, i, j])
   heapq.heapify(connectionsHeap)
-      
+  
+  originalNodesList = nodes.copy()
   nodes = [-1] * len(nodes)
   
   # Answers the question: "Who is the parent of this node"
@@ -47,9 +48,11 @@ def solve():
       return node
     
   # Makes both nodes have the same parent
-  def union(node1: int, node2: int) -> int:
+  # Returns whether or not all nodes in the graph have been connected
+  def union(node1: int, node2: int) -> bool:
     node1Parent = find(node1)
     node2Parent = find(node2)
+    
     if nodes[node1Parent] < nodes[node2Parent]:
       nodes[node1Parent] += nodes[node2Parent]
       
@@ -62,20 +65,18 @@ def solve():
       nodes[node1Parent] = node2Parent
       # Path compression
       nodes[node1] = node2Parent
-      
-  for _ in range(NUM_CONNECTIONS):
+    
+    return nodes[node1Parent] == -1000 or nodes[node1Parent] == -1000
+            
+  ans = 0 
+  while True:
     _, node1, node2 = heapq.heappop(connectionsHeap)
     if find(node1) != find(node2):
-      union(node1, node2)
-      
-  
-  ans = 1
-  # We want the "weight" of the three largest circuits which have been created
-  sortedNodes = sorted(nodes)
-  for i in range(3):
-    ans *= sortedNodes[i]
-  ans = abs(ans)
-      
+      allNodesConnected = union(node1, node2)
+      if allNodesConnected:
+        ans = originalNodesList[node1][0] * originalNodesList[node2][0]
+        break
+            
   print(ans)      
 
 solve()
