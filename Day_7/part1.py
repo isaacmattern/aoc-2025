@@ -14,14 +14,25 @@ def solve():
   
   input = getInput()
   
-  print("Beginning of Input\n")
-  
+  grid = []
   for line in input:
-    print(line)
-    
-  print("\nEnd of Input")
-  
+    trimmedLine = line.strip().replace('S', '|')
+    grid.append([char for char in trimmedLine])
+      
   ans = 0
+  
+  for i in range(len(grid) - 1):
+    for j in range(len(grid[0])):
+      if grid[i][j] == "|":
+        if grid[i+1][j] == "^":
+          ans += 1
+          if j-1 >= 0:
+            grid[i+1][j-1] = "|"
+          if j+1 < len(grid[0]):
+            grid[i+1][j+1] = "|"
+        else:
+          grid[i+1][j] = "|"
+      
   print(ans)      
 
 solve()
