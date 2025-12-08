@@ -14,14 +14,31 @@ def solve():
   
   input = getInput()
   
-  print("Beginning of Input\n")
+  rows = []
   
   for line in input:
-    print(line)
+    row = []
+    for token in line.split():
+      row.append(token)
+    rows.append(row)
     
-  print("\nEnd of Input")
-  
   ans = 0
+    
+  for i in range(len(rows[0])):
+    accumulator = 0
+    multiplyFlag = False
+    if rows[-1][i] == "*":
+      accumulator = 1
+      multiplyFlag = True
+      
+    for j in range(len(rows) - 1):
+      if multiplyFlag:
+        accumulator *= int(rows[j][i])
+      else:
+        accumulator += int(rows[j][i])
+    
+    ans += accumulator
+        
   print(ans)      
 
 solve()
