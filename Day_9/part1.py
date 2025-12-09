@@ -14,14 +14,19 @@ def solve():
   
   input = getInput()
   
-  print("Beginning of Input\n")
-  
+  redTiles = []  
   for line in input:
-    print(line)
-    
-  print("\nEnd of Input")
+    x, y = line.strip().split(",")
+    redTiles.append([x, y])
   
-  ans = 0
-  print(ans)      
+  largest = 0
+  for i in range(len(redTiles)):
+    for j in range(i + 1, len(redTiles)):
+      width = abs(int(redTiles[i][0]) - int(redTiles[j][0])) + 1
+      height = abs(int(redTiles[i][1]) - int(redTiles[j][1])) + 1
+      rectangleArea = int(width * height)
+      largest = max(largest, rectangleArea)
+    
+  print(largest)      
 
 solve()
