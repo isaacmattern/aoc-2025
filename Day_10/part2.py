@@ -46,7 +46,9 @@ def parseInput(input) -> list[Machine]:
       numbersWithCommas = buttonSchematic[1:len(buttonSchematic)-1]
       button = tuple([int(num) for num in numbersWithCommas.split(",")])
       buttons.append(button)
-    buttons = tuple(buttons)
+    # Sort buttons by largest to smallest length (most "efficient" button presses)
+    sortedButtons = reversed(sorted(buttons, key=len))
+    buttons = tuple(sortedButtons)
       
     joltagesString = trimmedLine[openCurlyIndex+1:closeCurlyIndex]
     joltages = tuple([int(num) for num in joltagesString.split(",")])
