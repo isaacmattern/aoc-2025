@@ -61,25 +61,32 @@ def solve():
   input = getInput()
   machines = parseInput(input)
   
-  def dfs(machine: Machine, curr: list[bool], i: int, buttonsPushed: int) -> int:
-    if i == len(machine.buttons):
-      if machine.targetState == tuple(curr):
-        return buttonsPushed
-      else:
-        return math.inf
+  def dfs(m: int, curr: list[int], i: int, buttonsPushed: int) -> int:
+    if machines[m].joltages == tuple(curr):
+      return buttonsPushed
+    elif i == len(machines[m].buttons):
+      return math.inf
     
     updatedButtons = curr.copy()
-    for buttonIndex in machine.buttons[i]:
-      updatedButtons[buttonIndex] = not updatedButtons[buttonIndex]
-    pushButton = dfs(machine, updatedButtons, i + 1, buttonsPushed + 1)
+    recurse = True
+    for buttonIndex in machines[m].buttons[i]:
+      updatedButtons[buttonIndex] += 1
+      if updatedButtons[buttonIndex] > machines[m].joltages[buttonIndex]:
+        recurse = False
+        break
+    
+    pushButton = math.inf
+    if recurse:
+      pushButton = dfs(m, updatedButtons, i, buttonsPushed + 1)
       
-    doNotPushButton = dfs(machine, curr, i + 1, buttonsPushed)
+    doNotPushButton = dfs(m, curr, i + 1, buttonsPushed)
     return min(pushButton, doNotPushButton)
   
   minButtonPushesPerMachine = []
-  for machine in machines:
-    start = [False] * len(machine.targetState)
-    minButtonPushesPerMachine.append(dfs(machine, start, 0, 0))
+  for m in range(len(machines)):
+    start = [0] * len(machines[m].targetState)
+    minButtonPushesPerMachine.append(dfs(m, start, 0, 0))
+    print(f"Completed {m+1} of {len(machines)} total machines.")
     
   print(sum(minButtonPushesPerMachine))      
 
