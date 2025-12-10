@@ -1,5 +1,23 @@
 import sys
 
+class Machine:
+  def __init__(self, targetState: tuple[bool], buttons: tuple[tuple[int]], joltages: tuple[int]):
+    if not isinstance(targetState, tuple) or not all(isinstance(x, bool) for x in targetState):
+      raise ValueError("targetState must be a tuple of bools")
+
+    if not isinstance(buttons, tuple) or not all(
+        isinstance(b, tuple) and all(isinstance(x, int) for x in b)
+        for b in buttons
+    ):
+      raise ValueError("buttons must be a tuple of tuples of ints")
+
+    if not isinstance(joltages, tuple) or not all(isinstance(x, int) for x in joltages):
+      raise ValueError("joltages must be a tuple of ints")
+
+    self.targetState = targetState
+    self.buttons = buttons
+    self.joltages = joltages
+    
 def getInput():
   if len(sys.argv) < 2:
     print("Usage: python3 part1.py <filename>")
@@ -9,10 +27,7 @@ def getInput():
   input = open(filename, 'r')
   return input
 
-def solve():
-  
-  input = getInput()
-    
+def parseInput(input) -> list[Machine]:
   machines = []
   for line in input:
     trimmedLine = line.strip()
@@ -35,8 +50,16 @@ def solve():
     joltagesString = trimmedLine[openCurlyIndex+1:closeCurlyIndex]
     joltages = tuple([int(num) for num in joltagesString.split(",")])
     
-    machines.append((targetState, buttons, joltages))
-      
+    newMachine = Machine(targetState=targetState, buttons=buttons, joltages=joltages)
+    machines.append(newMachine)
+    
+  return machines
+  
+
+def solve():
+  input = getInput()
+  machines = parseInput(input)
+    
   ans = 0
   print(ans)      
 
