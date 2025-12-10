@@ -1,4 +1,5 @@
 import sys
+import math
 
 class Machine:
   def __init__(self, targetState: tuple[bool], buttons: tuple[tuple[int]], joltages: tuple[int]):
@@ -59,8 +60,27 @@ def parseInput(input) -> list[Machine]:
 def solve():
   input = getInput()
   machines = parseInput(input)
+  
+  def dfs(machine: Machine, curr: list[bool], i: int, buttonsPushed: int) -> int:
+    if i == len(machine.buttons):
+      if machine.targetState == tuple(curr):
+        return buttonsPushed
+      else:
+        return math.inf
     
-  ans = 0
-  print(ans)      
+    updatedButtons = curr.copy()
+    for buttonIndex in machine.buttons[i]:
+      updatedButtons[buttonIndex] = not updatedButtons[buttonIndex]
+    pushButton = dfs(machine, updatedButtons, i + 1, buttonsPushed + 1)
+      
+    doNotPushButton = dfs(machine, curr, i + 1, buttonsPushed)
+    return min(pushButton, doNotPushButton)
+  
+  minButtonPushesPerMachine = []
+  for machine in machines:
+    start = [False] * len(machine.targetState)
+    minButtonPushesPerMachine.append(dfs(machine, start, 0, 0))
+    
+  print(sum(minButtonPushesPerMachine))      
 
 solve()
