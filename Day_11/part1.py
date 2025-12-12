@@ -14,14 +14,27 @@ def solve():
   
   input = getInput()
   
-  print("Beginning of Input\n")
+  # key = str, val = list[str]
+  nodes = {}
   
   for line in input:
-    print(line)
+    trimmed = line.strip()
+    input, outputs = trimmed.split(":")
+    outputList = []
+    for output in outputs.strip().split(" "):
+      outputList.append(output)
+    nodes[input] = outputList
     
-  print("\nEnd of Input")
-  
   ans = 0
+  def dfs(curr: str):
+    if curr == "out":
+      nonlocal ans
+      ans += 1
+    else:
+      for nextNode in nodes[curr]:
+        dfs(nextNode)
+    
+  dfs("you")  
   print(ans)      
 
 solve()
