@@ -1,5 +1,6 @@
 import sys
-import math
+import numpy as np
+from scipy.optimize import milp, LinearConstraint, Bounds
 
 class Machine:
   def __init__(self, targetState: tuple[bool], buttons: tuple[tuple[int]], joltages: tuple[int]):
@@ -63,32 +64,43 @@ def solve():
   input = getInput()
   machines = parseInput(input)
   
-  def dfs(m: int, curr: list[int], i: int, buttonsPushed: int) -> int:
-    if machines[m].joltages == tuple(curr):
-      return buttonsPushed
-    elif i == len(machines[m].buttons):
-      return math.inf
+  # Note to self: Used Gemini LLM for this solution. Was unable to come up with a solution myself.
+  # I knew it likely required a linear programming solution, but didn't know how to solve on my own. 
+  def solveMachine(machine: Machine) -> int:
+    num_buttons = len(machine.buttons)
+    num_counters = len(machine.joltages)
     
-    updatedButtons = curr.copy()
-    recurse = True
-    for buttonIndex in machines[m].buttons[i]:
-      updatedButtons[buttonIndex] += 1
-      if updatedButtons[buttonIndex] > machines[m].joltages[buttonIndex]:
-        recurse = False
-        break
+    # 1. Objective function: Minimize sum(x_j), so coefficients are all 1
+    c = np.ones(num_buttons)
     
-    pushButton = math.inf
-    if recurse:
-      pushButton = dfs(m, updatedButtons, i, buttonsPushed + 1)
-      
-    doNotPushButton = dfs(m, curr, i + 1, buttonsPushed)
-    return min(pushButton, doNotPushButton)
+    # 2. Build the Constraint Matrix A
+    # A[i, j] = 1 if button j affects counter i, else 0
+    A = np.zeros((num_counters, num_buttons))
+    for j, button_indices in enumerate(machine.buttons):
+      for i in button_indices:
+        A[i, j] = 1
+                
+    # 3. Define the constraints: A @ x = target_joltages
+    # SciPy MILP uses: lower_bound <= A @ x <= upper_bound
+    # For equality, lower_bound == upper_bound
+    targets = np.array(machine.joltages)
+    constraints = LinearConstraint(A, targets, targets)
+    
+    # 4. Integrality constraints (1 means the variable must be an integer)
+    integrality = np.ones(num_buttons)
+    
+    # 5. Bounds: x_j >= 0
+    bounds = Bounds(0, np.inf)
+    
+    # Solve
+    res = milp(c=c, constraints=constraints, integrality=integrality, bounds=bounds)
+    
+    return int(round(res.fun))
   
   minButtonPushesPerMachine = []
   for m in range(len(machines)):
-    start = [0] * len(machines[m].targetState)
-    minButtonPushesPerMachine.append(dfs(m, start, 0, 0))
-    print(f"Completed {m+1} of {len(machines)} total machines.")
+    buttonPresses = solveMachine(machines[m])
+    minButtonPushesPerMachine.append(buttonPresses)
     
   print(sum(minButtonPushesPerMachine))      
 
